@@ -1,0 +1,167 @@
+
+'use client';
+
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { User, Save, Loader2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { useAuth } from '@/hooks/useAuth';
+import { doc, updateDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase/config';
+import { useAuthStore } from '@/store/authStore';
+import type { CertificationLevel } from '@/types/user';
+
+const profileSchema = z.object({
+  displayName: z.string().min(2, '用户名至少需要2个字符'),
+  homeBase: z.string().optional(),
+  certificationLevel: z.enum(['OW', 'AOW', 'Rescue', 'DM', 'Instructor']),
+});
+
+type ProfileFormValues = z.infer<typeof profileSchema>;
+
+export default function ProfilePage() {
+  const { user } = useAuth();
+  const { setUser } = useAuthStore();
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+
+  const form = useForm<ProfileFormValues>({
+    resolver: zodResolver(profileSchema),
+    defaultValues: {
+      displayName: user?.displayName || '',
+      homeBase: user?.homeBase || '',
+      certificationLevel: (user?.certificationLevel as CertificationLevel) || 'OW',
+    },
+  });
+
+  const onSubmit = async (data: ProfileFormValues) => {
+    if (!user) return;
+    setLoading(true);
+    setSuccess(false);
+    try {
+      const userDoc = doc(db, 'users', user.uid);
+      await updateDoc(userDoc, {
+        displayName: data.displayName,
+        homeBase: data.homeBase || null,
+        certificationLevel: data.certificationLevel,
+      });
+
+      const updatedUser = {
+        ...user,
+        displayName: data.displayName,
+        homeBase: data.homeBase,
+        certificationLevel: data.certificationLevel,
+      };
+      setUser(updatedUser);
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 3000);
+    } catch (error) {
+      console.error('Error updating profile:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (!user) return null;
+
+  return (
+    <div className="container mx-auto py-8">
+      <h1 className="text-3xl font-bold mb-8">个人资料</h1>
+      <Card className="max-w-2xl">
+        <CardHeader>
+          <CardTitle className="flex items-center">
+            <User className="h-6 w-6 mr-2" />
+            编辑个人信息
+          </CardTitle>
+          <CardDescription>更新你的个人信息和潜水等级</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              {success && (
+                <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-md text-sm">
+                  资料更新成功！
+                </div>
+              )}
+              <FormField
+                control={form.control}
+                name="displayName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>用户名</FormLabel>
+                    <FormControl>
+                      <Input placeholder="你的名字" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="homeBase"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>所在地</FormLabel>
+                    <FormControl>
+                      <Input placeholder="例如：北京" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="certificationLevel"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>潜水等级</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="选择潜水等级" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="OW">Open Water (开放水域)</SelectItem>
+                        <SelectItem value="AOW">Advanced Open Water (进阶开放水域)</SelectItem>
+                        <SelectItem value="Rescue">Rescue Diver (救援潜水员)</SelectItem>
+                        <SelectItem value="DM">Dive Master (潜水长)</SelectItem>
+                        <SelectItem value="Instructor">Instructor (教练)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="flex items-center gap-4">
+                <p className="text-sm text-slate-500">总潜水次数: {user.totalDives}</p>
+                <p className="text-sm text-slate-500">
+                  注册时间: {new Date(user.joinedAt).toLocaleDateString('zh-CN')}
+                </p>
+              </div>
+              <Button type="submit" disabled={loading}>
+                {loading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    保存中...
+                  </>
+                ) : (
+                  <>
+                    <Save className="mr-2 h-4 w-4" />
+                    保存修改
+                  </>
+                )}
+              </Button>
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}

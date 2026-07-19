@@ -1,0 +1,191 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut as firebaseSignOut,
+  onAuthStateChanged,
+  User as FirebaseUser,
+  updateProfile,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from 'firebase/auth';
+import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { auth, db } from '@/lib/firebase/config';
+import { useAuthStore } from '@/store/authStore';
+import type { UserProfile } from '@/types/user';
+
+export function useAuth() {
+  const { user, setUser, setIsLoading } = useAuthStore();
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        const userProfile = await fetchUserProfile(firebaseUser.uid);
+        setUser(userProfile);
+      } else {
+        setUser(null);
+      }
+      setIsLoading(false);
+    });
+
+    return unsubscribe;
+  }, [setUser, setIsLoading]);
+
+  const fetchUserProfile = async (uid: string): Promise<UserProfile | null> => {
+    try {
+      const docRef = doc(db, 'users', uid);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        return docSnap.data() as UserProfile;
+      }
+      return null;
+    } catch (err) {
+      console.error('Error fetching user profile:', err);
+      return null;
+    }
+  };
+
+  const login = async (email: string, password: string): Promise<void> => {
+    setLoading(true);
+    setError(null);
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+    } catch (err: any) {
+      const errorMessage = getErrorMessage(err.code);
+      setError(errorMessage);
+      throw new Error(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const register = async (
+    email: string,
+    password: string,
+    displayName: string
+  ): Promise<void> => {
+    setLoading(true);
+    setError(null);
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const firebaseUser = userCredential.user;
+
+      await updateProfile(firebaseUser, { displayName });
+
+      const userProfile: UserProfile = {
+        uid: firebaseUser.uid,
+        displayName,
+        email,
+        certificationLevel: 'OW',
+        totalDives: 0,
+        joinedAt: new Date(),
+      };
+
+      await setDoc(doc(db, 'users', firebaseUser.uid), {
+        ...userProfile,
+        joinedAt: serverTimestamp(),
+      });
+
+      setUser(userProfile);
+    } catch (err: any) {
+      console.log("🔥🔥🔥 进入 catch 块 🔥🔥🔥");
+      console.log("🔥 完整错误对象:", err);
+      console.log("🔥 错误代码:", err.code);
+      console.log("🔥 错误信息:", err.message);
+      
+      let errorMessage = "注册失败，请检查网络连接后重试";
+      if (err.message && err.message !== "发生未知错误，请稍后重试") {
+        errorMessage = err.message;
+      } else if (err.code) {
+        const errorMap: Record<string, string> = {
+          'auth/email-already-in-use': '该邮箱已被注册',
+          'auth/weak-password': '密码强度不足（至少6位）',
+          'auth/invalid-email': '邮箱格式无效',
+        };
+        errorMessage = errorMap[err.code] || errorMessage;
+      }
+      
+      setError(errorMessage);
+      throw new Error(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const signInWithGoogle = async (): Promise<void> => {
+    setLoading(true);
+    setError(null);
+    try {
+      const provider = new GoogleAuthProvider();
+      const userCredential = await signInWithPopup(auth, provider);
+      const firebaseUser = userCredential.user;
+
+      const existingProfile = await fetchUserProfile(firebaseUser.uid);
+      if (!existingProfile) {
+        const userProfile: UserProfile = {
+          uid: firebaseUser.uid,
+          displayName: firebaseUser.displayName || 'User',
+          email: firebaseUser.email || '',
+          certificationLevel: 'OW',
+          totalDives: 0,
+          joinedAt: new Date(),
+        };
+
+        await setDoc(doc(db, 'users', firebaseUser.uid), {
+          ...userProfile,
+          joinedAt: serverTimestamp(),
+        });
+
+        setUser(userProfile);
+      }
+    } catch (err: any) {
+      const errorMessage = getErrorMessage(err.code);
+      setError(errorMessage);
+      throw new Error(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const signOut = async (): Promise<void> => {
+    try {
+      await firebaseSignOut(auth);
+      setUser(null);
+    } catch (err: any) {
+      console.error('Error signing out:', err);
+    }
+  };
+
+  const getErrorMessage = (code: string): string => {
+    switch (code) {
+      case 'auth/invalid-email':
+        return '邮箱地址无效';
+      case 'auth/user-disabled':
+        return '该账户已被禁用';
+      case 'auth/user-not-found':
+        return '用户不存在';
+      case 'auth/wrong-password':
+        return '密码错误';
+      case 'auth/email-already-in-use':
+        return '该邮箱已被注册';
+      case 'auth/weak-password':
+        return '密码强度不足';
+      default:
+        return '发生未知错误，请稍后重试';
+    }
+  };
+
+  return {
+    user,
+    loading,
+    error,
+    login,
+    register,
+    signInWithGoogle,
+    signOut,
+  };
+}
