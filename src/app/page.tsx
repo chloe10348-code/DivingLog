@@ -14,7 +14,7 @@ export default function HomePage() {
         <div className="flex items-center justify-center gap-3 mb-6">
           <Waves className="h-16 w-16 text-white/90" />
           <h1 className="text-6xl md:text-7xl font-bold text-white tracking-wide drop-shadow-lg">
-            DivingLog - Test
+            DivingLog
           </h1>
         </div>
         <p className="text-xl md:text-2xl text-white/80 mb-8 drop-shadow-md">
