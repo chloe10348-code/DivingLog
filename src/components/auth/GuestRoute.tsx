@@ -9,16 +9,16 @@ interface GuestRouteProps {
 }
 
 export function GuestRoute({ children }: GuestRouteProps) {
-  const { user, isLoading } = useAuth();
+  const { user, loading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!isLoading && user) {
+    if (!loading && user) {
       router.push('/dashboard');
     }
-  }, [user, isLoading, router]);
+  }, [user, loading, router]);
 
-  if (isLoading) {
+  if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
