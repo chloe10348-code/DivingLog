@@ -6,7 +6,6 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { MapPin, Star, Waves } from 'lucide-react';
 
-// 潜水目的地数据
 const DIVE_SITES = [
   { id: 1, name: '大堡礁', location: '澳大利亚', lat: -18.2871, lng: 147.6992, rating: 4.9, image: '🏝️' },
   { id: 2, name: '拉贾安帕特', location: '印度尼西亚', lat: -0.5, lng: 130.0, rating: 5.0, image: '🐠' },
@@ -85,3 +84,4 @@ function MapContent() {
 const MapPage = dynamic(() => Promise.resolve(MapContent), { ssr: false });
 
 export default MapPage;
+
