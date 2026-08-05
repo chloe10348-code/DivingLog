@@ -1,11 +1,11 @@
 'use client';
 
-import dynamic from 'next/dynamic';
 import { useState, useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { MapPin, Star, Waves } from 'lucide-react';
 
+// 潜点数据（精简）
 const DIVE_SITES = [
   { id: 1, name: '大堡礁', location: '澳大利亚', lat: -18.2871, lng: 147.6992, rating: 4.9, image: '🏝️' },
   { id: 2, name: '拉贾安帕特', location: '印度尼西亚', lat: -0.5, lng: 130.0, rating: 5.0, image: '🐠' },
@@ -16,16 +16,24 @@ const DIVE_SITES = [
   { id: 7, name: '西巴丹岛', location: '马来西亚', lat: 4.1, lng: 118.6, rating: 5.0, image: '🐢' },
 ];
 
-function MapContent() {
+export default function MapPage() {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<L.Map | null>(null);
   const [selectedSite, setSelectedSite] = useState<any>(null);
+  const [isMounted, setIsMounted] = useState(false);
+
+  // 只在客户端挂载后执行
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    // 确保在浏览器环境且已挂载
+    if (typeof window === 'undefined' || !isMounted) return;
     if (!mapContainer.current || map.current) return;
 
     map.current = L.map(mapContainer.current).setView([20, 0], 2);
+
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       attribution: '© OpenStreetMap',
@@ -46,8 +54,11 @@ function MapContent() {
         .bindPopup(`<h3 class="font-bold">${site.name}</h3><p>${site.location}</p>`);
     });
 
-    return () => { map.current?.remove(); map.current = null; };
-  }, []);
+    return () => {
+      map.current?.remove();
+      map.current = null;
+    };
+  }, [isMounted]);
 
   const flyToSite = (site: any) => {
     setSelectedSite(site);
@@ -79,9 +90,4 @@ function MapContent() {
     </div>
   );
 }
-
-// ⭐ 关键：禁用 SSR
-const MapPage = dynamic(() => Promise.resolve(MapContent), { ssr: false });
-
-export default MapPage;
 
