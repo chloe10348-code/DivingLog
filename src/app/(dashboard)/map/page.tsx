@@ -17,14 +17,14 @@ const DIVE_SITES = [
   { id: 7, name: '西巴丹岛', location: '马来西亚', lat: 4.1, lng: 118.6, rating: 5.0, image: '🐢' },
 ];
 
-// 🌟 这是真正的地图组件（独立文件，使用 window）
+// ✅ 这是实际的地图组件（使用 window 的代码都在这里）
 function MapContent() {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<L.Map | null>(null);
   const [selectedSite, setSelectedSite] = useState<any>(null);
 
   useEffect(() => {
-    // 确保在浏览器环境运行
+    // 确保在浏览器环境运行（双重保护）
     if (typeof window === 'undefined') return;
     if (!mapContainer.current || map.current) return;
 
@@ -74,9 +74,7 @@ function MapContent() {
           {DIVE_SITES.map((site) => (
             <div
               key={site.id}
-              className={`p-2 rounded-lg border cursor-pointer hover:shadow-md ${
-                selectedSite?.id === site.id ? 'border-cyan-500 bg-cyan-50' : 'border-gray-200'
-              }`}
+              className={`p-2 rounded-lg border cursor-pointer hover:shadow-md ${selectedSite?.id === site.id ? 'border-cyan-500 bg-cyan-50' : 'border-gray-200'}`}
               onClick={() => flyToSite(site)}
             >
               <span className="text-xl">{site.image}</span>
@@ -89,7 +87,7 @@ function MapContent() {
   );
 }
 
-// ⭐ 关键：动态导入 + 禁用 SSR
+// ⭐⭐⭐ 关键：动态导入 + 禁用 SSR ⭐⭐⭐
 // 这样 MapContent 只在浏览器端渲染，服务器端完全跳过
 const MapPage = dynamic(() => Promise.resolve(MapContent), {
   ssr: false,
