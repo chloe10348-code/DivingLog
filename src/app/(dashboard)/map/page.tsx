@@ -2,11 +2,8 @@
 
 import dynamic from 'next/dynamic';
 import { useState, useEffect, useRef } from 'react';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
-import { MapPin, Waves } from 'lucide-react';
 
-// 潜点数据
+// 潜点数据（不依赖 leaflet）
 const DIVE_SITES = [
   { id: 1, name: '大堡礁', location: '澳大利亚', lat: -18.2871, lng: 147.6992, rating: 4.9, image: '🏝️' },
   { id: 2, name: '拉贾安帕特', location: '印度尼西亚', lat: -0.5, lng: 130.0, rating: 5.0, image: '🐠' },
@@ -17,44 +14,56 @@ const DIVE_SITES = [
   { id: 7, name: '西巴丹岛', location: '马来西亚', lat: 4.1, lng: 118.6, rating: 5.0, image: '🐢' },
 ];
 
-// ✅ 这是实际的地图组件（使用 window 的代码都在这里）
 function MapContent() {
   const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<L.Map | null>(null);
+  const map = useRef<any>(null);
   const [selectedSite, setSelectedSite] = useState<any>(null);
+  const [isClient, setIsClient] = useState(false);
+
+  // 标记为客户端
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   useEffect(() => {
-    // 确保在浏览器环境运行（双重保护）
-    if (typeof window === 'undefined') return;
+    // ⭐ 只在客户端加载 leaflet
+    if (!isClient || typeof window === 'undefined') return;
     if (!mapContainer.current || map.current) return;
 
-    map.current = L.map(mapContainer.current).setView([20, 0], 2);
+    // 动态导入 leaflet
+    import('leaflet').then((L) => {
+      import('leaflet/dist/leaflet.css');
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '© OpenStreetMap',
-    }).addTo(map.current);
+      map.current = L.map(mapContainer.current).setView([20, 0], 2);
 
-    const icon = L.icon({
-      iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-      shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
-      popupAnchor: [1, -34],
-      shadowSize: [41, 41],
-    });
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap',
+      }).addTo(map.current);
 
-    DIVE_SITES.forEach((site) => {
-      L.marker([site.lat, site.lng], { icon })
-        .addTo(map.current!)
-        .bindPopup(`<h3 class="font-bold">${site.name}</h3><p>${site.location}</p>`);
+      const icon = L.icon({
+        iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+        shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41],
+      });
+
+      DIVE_SITES.forEach((site) => {
+        L.marker([site.lat, site.lng], { icon })
+          .addTo(map.current!)
+          .bindPopup(`<h3 class="font-bold">${site.name}</h3><p>${site.location}</p>`);
+      });
     });
 
     return () => {
-      map.current?.remove();
-      map.current = null;
+      if (map.current) {
+        map.current.remove();
+        map.current = null;
+      }
     };
-  }, []);
+  }, [isClient]);
 
   const flyToSite = (site: any) => {
     setSelectedSite(site);
@@ -68,7 +77,7 @@ function MapContent() {
       <div ref={mapContainer} className="flex-1 relative" />
       <div className="bg-white border-t border-gray-200 h-48 overflow-y-auto p-4">
         <h3 className="font-semibold text-slate-700 mb-2 flex items-center gap-2">
-          <Waves className="h-4 w-4 text-cyan-600" /> 热门潜点
+          🌊 热门潜点
         </h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
           {DIVE_SITES.map((site) => (
@@ -87,8 +96,7 @@ function MapContent() {
   );
 }
 
-// ⭐⭐⭐ 关键：动态导入 + 禁用 SSR ⭐⭐⭐
-// 这样 MapContent 只在浏览器端渲染，服务器端完全跳过
+// 动态导入，禁用 SSR
 const MapPage = dynamic(() => Promise.resolve(MapContent), {
   ssr: false,
   loading: () => (
