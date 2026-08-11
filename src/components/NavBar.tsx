@@ -14,6 +14,7 @@ import {
   Menu,
   X,
   Camera,
+  Images,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -21,6 +22,7 @@ const navItems = [
   { name: '仪表盘', href: '/dashboard', icon: Home },
   { name: '记录潜水', href: '/log', icon: Camera },
   { name: '潜水日记', href: '/journal', icon: BookOpen },
+  { name: '照片墙', href: '/photos', icon: Images },
   // { name: '潜点地图', href: '/map', icon: Map }, // 暂时隐藏地图功能
   { name: '个人资料', href: '/profile', icon: User },
 ];
