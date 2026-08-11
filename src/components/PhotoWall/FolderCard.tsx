@@ -109,3 +109,4 @@ export default function FolderCard({ folder, onClick, onEdit, onDelete, onUpload
     </div>
   );
 }
+  
