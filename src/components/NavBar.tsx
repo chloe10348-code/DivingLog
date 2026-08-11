@@ -1,55 +1,5 @@
 'use client';
 
-export default function MapPage() {
-  return (
-    <div className="max-w-4xl mx-auto p-8 text-center">
-      <div className="text-6xl mb-6">🗺️</div>
-      <h1 className="text-3xl font-bold text-slate-800 mb-4">潜点地图</h1>
-      <p className="text-gray-600 mb-6">地图功能即将上线...</p>
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-left">
-        <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
-          <span className="text-2xl">🏝️</span>
-          <h3 className="font-semibold">大堡礁</h3>
-          <p className="text-sm text-gray-500">澳大利亚</p>
-        </div>
-        <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
-          <span className="text-2xl">🐠</span>
-          <h3 className="font-semibold">拉贾安帕特</h3>
-          <p className="text-sm text-gray-500">印度尼西亚</p>
-        </div>
-        <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
-          <span className="text-2xl">🌴</span>
-          <h3 className="font-semibold">马尔代夫</h3>
-          <p className="text-sm text-gray-500">马尔代夫</p>
-        </div>
-        <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
-          <span className="text-2xl">🦁</span>
-          <h3 className="font-semibold">加拉帕戈斯</h3>
-          <p className="text-sm text-gray-500">厄瓜多尔</p>
-        </div>
-        <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
-          <span className="text-2xl">🏜️</span>
-          <h3 className="font-semibold">红海</h3>
-          <p className="text-sm text-gray-500">埃及</p>
-        </div>
-        <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
-          <span className="text-2xl">🌸</span>
-          <h3 className="font-semibold">帕劳</h3>
-          <p className="text-sm text-gray-500">帕劳</p>
-        </div>
-      </div>
-    </div>
-  );
-}
-这样地图页面至少能显示潜点列表，不影响其他功能使用。提交后告诉我！ 🗺️
-
-第2步：移除导航栏中的地图链接
-编辑 src/components/NavBar.tsx，找到地图链接并注释掉或删除。give me the completed code
-好的！这是移除地图链接后的 src/components/NavBar.tsx 完整代码：
-
-tsx
-'use client';
-
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -194,3 +144,4 @@ export default function NavBar() {
     </nav>
   );
 }
+
