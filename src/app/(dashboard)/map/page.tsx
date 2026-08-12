@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { MapPin, Waves, ExternalLink } from 'lucide-react';
+import { MapPin, Waves, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
 
 const DIVE_SITES = [
   // ===== 大洋洲 =====
@@ -445,7 +445,6 @@ const DIVE_SITES = [
     image: '❄️',
     description: '北美与欧亚板块之间的裂缝，世界上最清澈的水域，能见度达100米以上',
   },
-  // ===== 额外新增 =====
   {
     id: 44,
     name: '伯利兹大蓝洞',
@@ -460,6 +459,7 @@ const DIVE_SITES = [
 
 export default function MapPage() {
   const [selectedSite, setSelectedSite] = useState<any>(null);
+  const [showAll, setShowAll] = useState(false);
 
   const getGoogleMapsUrl = (lat: number, lng: number) => {
     return `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
@@ -469,6 +469,9 @@ export default function MapPage() {
     ? `${selectedSite.lat},${selectedSite.lng}` 
     : '0,120';
   const mapZoom = selectedSite ? 10 : 3;
+
+  // 显示前10个或全部
+  const displayedSites = showAll ? DIVE_SITES : DIVE_SITES.slice(0, 10);
 
   return (
     <div className="max-w-7xl mx-auto p-6">
@@ -491,14 +494,34 @@ export default function MapPage() {
         />
       </div>
 
-      <h2 className="text-lg font-semibold text-slate-700 mb-3 flex items-center gap-2">
-        <Waves className="h-5 w-5 text-cyan-600" />
-        热门潜水目的地
-        <span className="text-sm text-gray-400 font-normal ml-2">点击查看位置</span>
-      </h2>
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-lg font-semibold text-slate-700 flex items-center gap-2">
+          <Waves className="h-5 w-5 text-cyan-600" />
+          热门潜水目的地
+          <span className="text-sm text-gray-400 font-normal ml-2">
+            显示 {showAll ? DIVE_SITES.length : 10} 个
+          </span>
+        </h2>
+        <button
+          onClick={() => setShowAll(!showAll)}
+          className="flex items-center gap-1 text-sm text-cyan-600 hover:text-cyan-800 transition px-3 py-1 rounded-full hover:bg-cyan-50"
+        >
+          {showAll ? (
+            <>
+              <ChevronUp className="h-4 w-4" />
+              收起
+            </>
+          ) : (
+            <>
+              <ChevronDown className="h-4 w-4" />
+              查看全部 {DIVE_SITES.length} 个
+            </>
+          )}
+        </button>
+      </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3">
-        {DIVE_SITES.map((site) => (
+        {displayedSites.map((site) => (
           <div
             key={site.id}
             className={`bg-white rounded-xl p-3 border-2 cursor-pointer transition-all hover:shadow-md ${
