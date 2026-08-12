@@ -196,19 +196,9 @@ const DIVE_SITES = [
     image: '🏝️',
     description: '泰国最顶级的潜水目的地，以清澈海水和丰富海洋生物闻名',
   },
-  {
-    id: 20,
-    name: '诗巴丹',
-    location: '马来西亚, 沙巴',
-    lat: 4.1,
-    lng: 118.6,
-    rating: 5.0,
-    image: '🐢',
-    description: '世界顶级潜水目的地之一，海龟和鲨鱼的天堂',
-  },
   // ===== 南亚/印度洋 =====
   {
-    id: 21,
+    id: 20,
     name: '马尔代夫',
     location: '马尔代夫',
     lat: 3.2028,
@@ -218,7 +208,7 @@ const DIVE_SITES = [
     description: '印度洋上的天堂群岛，清澈海水和丰富海洋生物',
   },
   {
-    id: 22,
+    id: 21,
     name: '蓝魔法',
     location: '马尔代夫, 北马累环礁',
     lat: 4.35,
@@ -228,7 +218,7 @@ const DIVE_SITES = [
     description: '马尔代夫最著名的蝠鲼清洁站，全年可遇蝠鲼群',
   },
   {
-    id: 23,
+    id: 22,
     name: '曼塔沙地',
     location: '马尔代夫, 北马累环礁',
     lat: 4.2,
@@ -238,7 +228,7 @@ const DIVE_SITES = [
     description: '蝠鲼日常清洁和觅食的热点区域',
   },
   {
-    id: 24,
+    id: 23,
     name: '斯里兰卡观鲸点',
     location: '斯里兰卡, 亭可马里',
     lat: 8.5,
@@ -249,7 +239,7 @@ const DIVE_SITES = [
   },
   // ===== 太平洋 =====
   {
-    id: 25,
+    id: 24,
     name: '帕劳',
     location: '帕劳',
     lat: 7.3,
@@ -259,7 +249,7 @@ const DIVE_SITES = [
     description: '太平洋上的潜水天堂，以水母湖和蓝角闻名',
   },
   {
-    id: 26,
+    id: 25,
     name: '蓝角',
     location: '帕劳',
     lat: 7.3,
@@ -269,7 +259,7 @@ const DIVE_SITES = [
     description: '帕劳最著名的潜点，急流带来的丰富营养吸引了大量海洋生物',
   },
   {
-    id: 27,
+    id: 26,
     name: '蓝湖 (帕劳)',
     location: '帕劳',
     lat: 7.3,
@@ -279,7 +269,7 @@ const DIVE_SITES = [
     description: '帕劳的浅水潜水天堂，适合所有级别潜水员',
   },
   {
-    id: 28,
+    id: 27,
     name: '所罗门群岛',
     location: '所罗门群岛',
     lat: -8.0,
@@ -290,7 +280,7 @@ const DIVE_SITES = [
   },
   // ===== 中美洲/加勒比海 =====
   {
-    id: 29,
+    id: 28,
     name: '加拉帕戈斯群岛',
     location: '厄瓜多尔',
     lat: -0.5,
@@ -300,7 +290,7 @@ const DIVE_SITES = [
     description: '达尔文进化论的灵感来源，独特的海洋生态系统',
   },
   {
-    id: 30,
+    id: 29,
     name: '达尔文拱门',
     location: '厄瓜多尔, 加拉帕戈斯',
     lat: -0.5,
@@ -310,7 +300,7 @@ const DIVE_SITES = [
     description: '加拉帕戈斯最著名的潜点，标志性岩石拱门',
   },
   {
-    id: 31,
+    id: 30,
     name: '狼岛',
     location: '厄瓜多尔, 加拉帕戈斯',
     lat: -0.1,
@@ -320,7 +310,7 @@ const DIVE_SITES = [
     description: '加拉帕戈斯最偏远的潜点，锤头鲨群的天堂',
   },
   {
-    id: 32,
+    id: 31,
     name: '博奈尔岛',
     location: '加勒比海',
     lat: 12.15,
@@ -330,7 +320,7 @@ const DIVE_SITES = [
     description: '加勒比海最著名的岸潜目的地，被称为"潜水者的天堂"',
   },
   {
-    id: 33,
+    id: 32,
     name: '开曼群岛',
     location: '加勒比海, 开曼',
     lat: 19.3,
@@ -341,7 +331,7 @@ const DIVE_SITES = [
   },
   // ===== 非洲/红海 =====
   {
-    id: 34,
+    id: 33,
     name: '红海',
     location: '埃及',
     lat: 27.0,
@@ -351,7 +341,7 @@ const DIVE_SITES = [
     description: '世界顶级潜水目的地，拥有超过1200种鱼类和壮观的珊瑚礁',
   },
   {
-    id: 35,
+    id: 34,
     name: 'SS锡斯特莱贡号沉船',
     location: '埃及, 红海',
     lat: 27.0,
@@ -361,7 +351,7 @@ const DIVE_SITES = [
     description: '世界最著名的沉船潜点之一，二战货轮，载有军用物资',
   },
   {
-    id: 36,
+    id: 35,
     name: '埃尔芬斯通礁',
     location: '埃及, 红海',
     lat: 25.3,
@@ -372,7 +362,7 @@ const DIVE_SITES = [
   },
   // ===== 欧洲/地中海 =====
   {
-    id: 37,
+    id: 36,
     name: '滨海自由城',
     location: '法国, 蔚蓝海岸',
     lat: 43.7,
@@ -382,7 +372,7 @@ const DIVE_SITES = [
     description: '法国蔚蓝海岸的潜水胜地，拥有清澈的地中海海水',
   },
   {
-    id: 38,
+    id: 37,
     name: '辛纳利亚海滩 (克里特岛)',
     location: '希腊, 克里特岛',
     lat: 35.0,
@@ -392,7 +382,7 @@ const DIVE_SITES = [
     description: '克里特岛最美丽的潜水海滩，清澈的蓝色海水',
   },
   {
-    id: 39,
+    id: 38,
     name: '卡利姆诺斯岛',
     location: '希腊, 爱琴海',
     lat: 36.95,
@@ -403,7 +393,7 @@ const DIVE_SITES = [
   },
   // ===== 北美洲 =====
   {
-    id: 40,
+    id: 39,
     name: '佛罗里达群岛',
     location: '美国, 佛罗里达',
     lat: 24.5,
@@ -414,7 +404,7 @@ const DIVE_SITES = [
   },
   // ===== 南美洲 =====
   {
-    id: 41,
+    id: 40,
     name: '费尔南多·迪诺罗尼亚',
     location: '巴西',
     lat: -3.85,
@@ -425,7 +415,7 @@ const DIVE_SITES = [
   },
   // ===== 亚洲其他 =====
   {
-    id: 42,
+    id: 41,
     name: '与那国岛海底遗迹',
     location: '日本, 冲绳',
     lat: 24.45,
@@ -435,7 +425,7 @@ const DIVE_SITES = [
     description: '神秘的海底金字塔遗迹，被认为可能是史前文明遗址',
   },
   {
-    id: 43,
+    id: 42,
     name: '冲绳蓝洞',
     location: '日本, 冲绳',
     lat: 26.3,
@@ -446,7 +436,7 @@ const DIVE_SITES = [
   },
   // ===== 极地/特殊 =====
   {
-    id: 44,
+    id: 43,
     name: '西尔弗拉裂缝',
     location: '冰岛',
     lat: 64.25,
@@ -454,6 +444,17 @@ const DIVE_SITES = [
     rating: 4.9,
     image: '❄️',
     description: '北美与欧亚板块之间的裂缝，世界上最清澈的水域，能见度达100米以上',
+  },
+  // ===== 额外新增 =====
+  {
+    id: 44,
+    name: '伯利兹大蓝洞',
+    location: '伯利兹',
+    lat: 17.3158,
+    lng: -87.5356,
+    rating: 4.8,
+    image: '🔵',
+    description: '世界最著名的蓝洞之一，直径300米，深124米，是洞穴潜水的圣地',
   },
 ];
 
@@ -479,7 +480,6 @@ export default function MapPage() {
         </span>
       </h1>
 
-      {/* Google Maps 嵌入 */}
       <div className="rounded-2xl overflow-hidden shadow-lg mb-6 bg-gray-100" style={{ height: '450px' }}>
         <iframe
           src={`https://maps.google.com/maps?q=${mapCenter}&z=${mapZoom}&output=embed`}
@@ -491,7 +491,6 @@ export default function MapPage() {
         />
       </div>
 
-      {/* 潜点列表 */}
       <h2 className="text-lg font-semibold text-slate-700 mb-3 flex items-center gap-2">
         <Waves className="h-5 w-5 text-cyan-600" />
         热门潜水目的地
@@ -524,7 +523,6 @@ export default function MapPage() {
         ))}
       </div>
 
-      {/* 选中潜点的详情 */}
       {selectedSite && (
         <div className="mt-4 p-4 bg-cyan-50 rounded-xl border border-cyan-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div>
